@@ -1,2 +1,2 @@
-float32[] directions
-float32[] intersections
+SourceDirection[] directions
+SourcePosition[] intersections
