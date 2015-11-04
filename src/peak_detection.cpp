@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cassert>
 #define V_SOUND 0.34 // m/ms
+#define NB_MICS 8
 #define D_MIC 0.2 // Distance entre 2 microphones
 
 struct Direction {
@@ -22,15 +23,13 @@ Point calcPosition(Direction& a, Direction& b){
   float cota = 1. / tan(a.theta);
   float cotb = 1. / tan(b.theta);
   if(b.theta != a.theta){
-
     point.x = (a.x * cota - b.x * cotb) / (cota - cotb);
     point.y = cota * (point.x - a.x);
-    return point;
+  } else {
+    point.x = 0;
+    point.y = 0;
   }
-  else{
-    point.x = 1000;
-    point.y = 1000;
-  }
+  return point;
 }
 Direction calcDirection(float delay, int mic1, int mic2) {
 
@@ -51,7 +50,7 @@ avec b = sqrt(c^2 - a^2)
 
   std::cout << a << std::endl;
   Direction direction;
-  direction.x = mic1 * D_MIC + c * (mic2 - mic1);
+  direction.x = (NB_MICS - 1 - mic1) * D_MIC + c * (mic1 - mic2);
   float b = pow(c,2) - pow(a,2);
 
   direction.theta = (delay < 0 ? -1 : 1) * atan(a / sqrt(fabs(b)));
@@ -101,7 +100,11 @@ class SubscribeAndPublish
 
         directions[j] =  calcDirection(delay, message.mic1[j], message.mic2[j]);
 
+				peak_detection::SourceDirection dir;
+				dir.theta = directions[j].theta;
+				dir.x = directions[j].x;
 
+				msg.directions.push_back(dir);
         /*
            std::cout << "x : " << direction.x << std::endl;
            std::cout << "theta : " << 180 / 3.1416 * direction.theta << std::endl;
