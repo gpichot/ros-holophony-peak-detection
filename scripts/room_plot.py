@@ -4,7 +4,7 @@ import rospy
 from peak_detection.msg import SoundSources
 import numpy as np
 import matplotlib.patches as patches
-import matplotlib import animation
+from matplotlib import animation
 import matplotlib.pyplot as plt
 import math
 
@@ -33,8 +33,8 @@ class RoomPlot(object):
     self.plt.clf()
     self.plt.ion()
     self.plt.autoscale(enable=False, tight=False)
-    self.plt.axis("equal")
-    self.plt.xlim(-4, 8)
+#   self.plt.axis("equal")
+    self.plt.xlim(-2, 4)
     self.plt.ylim(-1, MICS_COUNT * MICS_DISTANCE)
     self.draw_mics()
     for intersection in data.intersections:
@@ -45,15 +45,19 @@ class RoomPlot(object):
     for direction in data.directions:
         if math.tan(direction.theta) != 0:
             x = 0
-            # C'etait peut etre mieux avant...
+            # C'etait peut etre mieux avant...            
             if direction.theta < 0:
                 y = (direction.x) / math.tan(- direction.theta)
             else:
                 y = - (direction.x) * math.tan(math.pi / 2 - direction.theta)
+
             if y < 0:
                 x = 2 * (direction.x)
                 y = -y
-            self.plt.plot([direction.x, x], [0, y], scalex=False, scaley=False);
+        else:
+            x = direction.x
+            y = 3
+        self.plt.plot([direction.x, x], [0, y], scalex=False, scaley=False);
         print "(x: %f, theta: %f)" % (direction.x, direction.theta * 180 / 3.1416)
 
     self.plt.draw()
