@@ -132,12 +132,19 @@ include_directories(
 find_package(PkgConfig) 
 pkg_check_modules(SUPELECAUDIOR supelec-audio-remote REQUIRED)
 
-## Declare a C++ executable
+
+list(APPEND CMAKE_MODULE_PATH "/usr/share/SFML/cmake/Modules/")
+find_package(SFML 2 REQUIRED system window graphics)
+
 # add_executable(peak_detection_node src/peak_detection_node.cpp)
+## Declare a C++ executable
 include_directories(include ${catkin_INCLUDE_DIRS} ${SUPELECAUDIOR_INCLUDE_DIRS})
+include_directories(${SFML_INCLUDE_DIR})
+
 add_executable(peak_detection src/peak_detection.cpp)
-target_link_libraries(peak_detection ${catkin_LIBRARIES} ${SUPELECAUDIOR_LIBRARIES})
-add_dependencies(audiocorr_talker audiocorr_generate_messages_cpp)
+add_executable(smart_room_plot src/room_plot.cpp)
+target_link_libraries(peak_detection ${catkin_LIBRARIES})
+target_link_libraries(smart_room_plot ${catkin_LIBRARIES} ${SFML_LIBRARIES})
 
 
 ## Add cmake target dependencies of the executable

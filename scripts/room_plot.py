@@ -45,11 +45,8 @@ class RoomPlot(object):
     for direction in data.directions:
         if math.tan(direction.theta) != 0:
             x = 0
-            # C'etait peut etre mieux avant...            
-            if direction.theta < 0:
-                y = (direction.x) / math.tan(- direction.theta)
-            else:
-                y = - (direction.x) * math.tan(math.pi / 2 - direction.theta)
+            # C'etait peut etre mieux avant...
+            y = (direction.x) / math.tan(- direction.theta)
 
             if y < 0:
                 x = 2 * (direction.x)
